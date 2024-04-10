@@ -5,9 +5,9 @@
   const email = ref('');
   const street = ref('');
   const zipCode = ref('');
-  let responseDescription = reactive({ desc: 'no desc' });
+  let responseDescription = reactive({ desc: '' });
 
-  const submitForm = () => {
+  const submitForm = async () => {
     const requestOptions = {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -31,11 +31,9 @@
       })
     };
 
-    fetch('http://localhost:8080/confirmCheckout', requestOptions)
-        .then(response => response.json())
-      .then(data => {
-        responseDescription.desc = data.description;
-      });
+    const response = await fetch('http://127.0.0.1:8080/confirmCheckout', requestOptions)
+    const data = await response.json();
+    responseDescription.desc = data.description;
   }
 </script>
 
@@ -45,7 +43,7 @@
       <h1>Confirm Checkout</h1>
     </div>
     <form v-on:submit.prevent="submitForm" class="checkoutForm">
-      <input v-model="email" placeholder="Introduce your email" />
+      <input name="email" v-model="email" placeholder="Introduce your email" />
       <input v-model="street" placeholder="Enter street" />
       <input v-model="zipCode" placeholder="Enter Zip Code" />
       <button type="submit">Submit</button>
